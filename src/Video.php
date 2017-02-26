@@ -12,11 +12,14 @@ class Video
 
     protected $requests = [];
 
+    public $numberOfRequests;
+
 
     public function __construct($id, $size)
     {
         $this->id   = $id;
         $this->size = $size;
+        $this->numberOfRequests;
     }
 
     public function getId()
@@ -28,6 +31,7 @@ class Video
     public function addRequest(Request $request)
     {
         array_push($this->requests, $request);
+        $this->numberOfRequests++;
     }
 
 

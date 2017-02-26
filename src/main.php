@@ -28,8 +28,8 @@ class HashCode
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
         $this->calculate();
-        $writer = new FileWriter("../output/$argv[1].out", $this->servers);
-        $writer->printServersWithEndpoints();
+        //$writer = new FileWriter("../output/$argv[1].out", $this->servers);
+        //$writer->printServersWithEndpoints();
     }
 
 
@@ -45,14 +45,19 @@ class HashCode
 
     protected function calculate()
     {
+        usort($this->videos, 'sort_videos_by_requests');
+
         foreach ($this->videos as $v => $video) {
 
             foreach($video->getRequests() as $request)
             {
                 $closestServer = $this->servers[$request->endpoint->getClosestFreeServer($video)];
 
-                if($closestServer->hasSpace($video)) {
-                    $closestServer->addVideo($video);
+                if(is_object($closestServer))
+                {
+                    if($closestServer->hasSpace($video)) {
+                        $closestServer->addVideo($video);
+                    }
                 }
 
             }
