@@ -9,6 +9,8 @@
 include_once 'FileReader.php';
 include_once 'FileWriter.php';
 
+
+
 class HashCode
 {
 
@@ -29,10 +31,11 @@ class HashCode
 
     public function run()
     {
+        global $argv;
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
         $this->calculate();
-        $writer = new FileWriter('../output/kittens.out', $this->servers);
+        $writer = new FileWriter("../output/$argv[1]", $this->servers);
         $writer->write();
     }
 
@@ -42,7 +45,7 @@ class HashCode
         foreach ($this->videos as $v => $video) {
             foreach ($this->endpoints as $i => $endpoint) {
                 $sum[$i] = 0;
-                foreach ($endpoint->servers as $j => $server) {
+                foreach ($endpoint->getServers() as $j => $server) {
                     $requests = $video->getEndpointRequests($endpoint);
                     $latency = $server->getEndpointLatency($endpoint);
                     $cost = $requests*$latency;
@@ -63,5 +66,5 @@ class HashCode
 
 }
 
-$hash = new HashCode('../input/kittens.in');
+$hash = new HashCode("../input/$argv[1].in");
 $hash->run();

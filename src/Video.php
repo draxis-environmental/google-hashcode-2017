@@ -30,11 +30,11 @@ class Video
         $requests = array_filter(
             $this->requests,
             function ($e) use (&$id) {
-                return $e->id == $id;
+                return $e->getId() == $id;
             }
         );
 
-        return $requests[0]->total;
+        return ($requests) ? $requests[0]->getTotal() : null;
 
     }
 

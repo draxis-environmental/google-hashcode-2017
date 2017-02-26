@@ -27,4 +27,21 @@ class Endpoint
         array_push($this->servers, $server);
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getServers()
+    {
+        return $this->servers;
+    }
+
 }
