@@ -88,6 +88,7 @@ class FileReader
                 }
 
                 $this->endpoints[$i]->addServer($server);
+                $this->endpoints[$i]->addServerLatency($server->getId(),$serverData[1]);
             }
 
         }
@@ -95,7 +96,7 @@ class FileReader
         //parse requests
         for ($i = 0; $i < $this->totalRequests; $i++) {
             $requestData = $this->nextLine();
-            $req         = new Request($requestData[1], $requestData[2]);
+            $req         = new Request($this->endpoints[$requestData[1]], $requestData[2]);
             $this->videos[$requestData[0]]->addRequest($req);
         }
 

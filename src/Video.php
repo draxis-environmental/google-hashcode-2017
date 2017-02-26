@@ -2,6 +2,7 @@
 
 require_once 'Request.php';
 
+
 class Video
 {
 
@@ -16,6 +17,11 @@ class Video
     {
         $this->id   = $id;
         $this->size = $size;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
 
@@ -35,6 +41,12 @@ class Video
 
         return ($requests) ? $requests[0]->getTotal() : null;
 
+    }
+
+    public function getRequests()
+    {
+        usort($this->requests, 'sort_requests_by_total');
+        return $this->requests;
     }
 
 

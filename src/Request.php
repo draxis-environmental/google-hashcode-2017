@@ -5,15 +5,15 @@ class Request
 
     protected $id;
 
-    protected $endpointId;
+    public $endpoint;
 
-    protected $total;
+    public $total;
 
 
-    public function __construct($endpointId, $total)
+    public function __construct(Endpoint $endpoint, $total)
     {
-        $this->endpointId = $endpointId;
-        $this->total      = $total;
+        $this->endpoint = $endpoint;
+        $this->total    = $total;
     }
 
 

@@ -2,6 +2,7 @@
 
 include_once 'FileReader.php';
 include_once 'FileWriter.php';
+include_once 'Helpers.php';
 
 class HashCode
 {
@@ -26,7 +27,7 @@ class HashCode
         global $argv;
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
-        //$this->calculate();
+        $this->calculate();
         $writer = new FileWriter("../output/$argv[1].out", $this->servers);
         $writer->printServersWithEndpoints();
     }
@@ -45,7 +46,18 @@ class HashCode
     protected function calculate()
     {
         foreach ($this->videos as $v => $video) {
-            foreach ($this->servers as $i => $server) {
+
+            foreach($video->getRequests() as $request)
+            {
+                $closestServer = $this->servers[$request->endpoint->getClosestFreeServer($video)];
+
+                if($closestServer->hasSpace($video)) {
+                    $closestServer->addVideo($video);
+                }
+
+            }
+
+            /*foreach ($this->servers as $i => $server) {
                 $sum[$i] = 0;
                 foreach ($server->getAllEndpoints() as $endpointId) {
                     $requests = $video->getEndpointRequests($endpointId);
@@ -53,12 +65,21 @@ class HashCode
                     $cost     = $requests * $latency;
                     $sum[$i]  = $sum[$i] + $cost;
                 }
-            }
+            }*/
+        }
+
+        foreach($this->servers as $s)
+        {
+            echo $s->getId().' =>';
+            print_r($s->video_ids);
         }
 
     }
 
 }
+
+ini_set ('max_execution_time', 1600 );
+ini_set('memory_limit','912M');
 
 $hash = new HashCode("../input/$argv[1].in");
 $hash->run();

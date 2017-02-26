@@ -11,11 +11,14 @@ class Endpoint
 
     protected $dataCenterLatency;
 
+    protected $serverLatency;
+
 
     public function __construct($id, $latency)
     {
         $this->id                = $id;
         $this->dataCenterLatency = $latency;
+        $this->serverLatency     = array();
     }
 
 
@@ -24,7 +27,7 @@ class Endpoint
      */
     public function addServer(Server $server)
     {
-        array_push($this->servers, $server);
+      $this->servers[$server->getId()] = $server;
     }
 
 
@@ -43,6 +46,43 @@ class Endpoint
     public function getServers()
     {
         return $this->servers;
+    }
+
+
+    public function addServerLatency($serverId,$latency)
+    {
+        $this->serverLatency[$serverId] = $latency;
+    }
+
+    public function getServersLatency()
+    {
+        return $this->serverLatency;
+    }
+
+    public function getClosestFreeServer(Video $video, $excludeFullServers = array())
+    {
+        if(sizeof($excludeFullServers) >= $this->serverLatency )
+            return -1; // All cache servers are full , keep it in datacenter
+
+        $tmpServersLatency = $this->serverLatency;
+
+        foreach($excludeFullServers as $id => $exServerId) {
+            unset($tmpServersLatency[$exServerId]);
+        }
+
+        $serverId = array_keys($tmpServersLatency, min($tmpServersLatency));
+
+        if($tmpServersLatency[$serverId[0]] >= $this->dataCenterLatency )
+            return -1; // Datacenter is the closest, keep it in datacenter
+
+        if($this->servers[$serverId[0]]->hasSpace($video))
+            return $serverId[0];
+        else
+        {
+            array_push($excludeFullServers,$serverId[0]);
+            $this->getClosestFreeServer($video,$excludeFullServers);
+        }
+
     }
 
 }

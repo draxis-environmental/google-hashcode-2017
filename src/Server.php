@@ -11,11 +11,14 @@ class Server
 
     protected $free;
 
+    public $video_ids;
+
 
     public function __construct($id, $free, $endpointId = null, $latency = null)
     {
         $this->id   = $id;
         $this->free = $free;
+        $this->video_ids = array();
         if ( ! is_null($endpointId) && ! is_null($latency)) {
             $this->latencies[$endpointId] = $latency;
         }
@@ -31,8 +34,14 @@ class Server
     {
         array_push($this->videos, $video);
         $this->free = $this->free - $video->getSize();
+        $this->video_ids[$video->getId()] = $video->getId();
     }
 
+    public function hasSpace(Video $video)
+    {
+        $status = ( ($this->free >= $video->getSize()) > 0 ) ? true : false;
+        return $status;
+    }
 
     /**
      * @return mixed
@@ -50,7 +59,6 @@ class Server
     {
         return $this->free;
     }
-
 
     /**
      * @return array
