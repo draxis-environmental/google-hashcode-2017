@@ -21,7 +21,6 @@ class Server
         }
     }
 
-
     public function addEndpointLatency($endpointId, $latency)
     {
         $this->latencies[$endpointId] = $latency;
@@ -73,5 +72,14 @@ class Server
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getAllEndpoints()
+    {
+        return array_keys($this->latencies);
     }
 }

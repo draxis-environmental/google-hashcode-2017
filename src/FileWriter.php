@@ -43,4 +43,26 @@ class FileWriter
         return $line . "\n";
     }
 
+
+    public function printServersWithEndpoints() {
+
+        $totalServers = count($this->servers);
+
+        $myfile = fopen($this->filename, "w") or die("Unable to open file!");
+        $txt = $this::print_line($totalServers);
+        fwrite($myfile, $txt);
+
+        foreach ($this->servers as $server) {
+            fwrite($myfile, $server->getId());
+            fwrite($myfile, ' ');
+            foreach ($server->getAllEndpoints() as $id => $endpointId) {
+                fwrite($myfile, "$endpointId ");
+            }
+            $txt = $this::print_line();
+            fwrite($myfile, $txt);
+        }
+        fclose($myfile);
+
+    }
+
 }

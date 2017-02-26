@@ -26,9 +26,9 @@ class HashCode
         global $argv;
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
-        $this->calculate();
+        //$this->calculate();
         $writer = new FileWriter("../output/$argv[1].out", $this->servers);
-        $writer->write();
+        $writer->printServersWithEndpoints();
     }
 
 
@@ -45,11 +45,11 @@ class HashCode
     protected function calculate()
     {
         foreach ($this->videos as $v => $video) {
-            foreach ($this->endpoints as $i => $endpoint) {
+            foreach ($this->servers as $i => $server) {
                 $sum[$i] = 0;
-                foreach ($endpoint->getServers() as $j => $server) {
-                    $requests = $video->getEndpointRequests($endpoint);
-                    $latency  = $server->getEndpointLatency($endpoint);
+                foreach ($server->getAllEndpoints() as $endpointId) {
+                    $requests = $video->getEndpointRequests($endpointId);
+                    $latency  = $server->getEndpointLatency($endpointId);
                     $cost     = $requests * $latency;
                     $sum[$i]  = $sum[$i] + $cost;
                 }
