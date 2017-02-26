@@ -104,7 +104,12 @@ class FileReader
 
     protected function nextLine()
     {
-        return explode(' ', $this->file->fgets());
+        $line = $this::stripEndLine($this->file->fgets());
+        return explode(' ', $line);
+    }
+
+    protected static function stripEndLine($string) {
+        return $string = trim(preg_replace('/\s\s+/', ' ', $string));
     }
 
 }
