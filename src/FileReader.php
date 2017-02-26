@@ -83,7 +83,7 @@ class FileReader
                     $server = $this->servers[$serverData[0]];
                     $server->addEndpointLatency($i, $serverData[1]);
                 } else {
-                    $server                        = new Server($serverData[0], $i, $this->capacity, $serverData[1]);
+                    $server                        = new Server($serverData[0], $this->capacity, $i, $serverData[1]);
                     $this->servers[$serverData[0]] = $server;
                 }
 
