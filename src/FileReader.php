@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: lephleg
- * Date: 26/02/2017
- * Time: 00:41
- */
-
 include_once 'Endpoint.php';
 include_once 'Video.php';
 include_once 'Server.php';
@@ -18,22 +11,30 @@ class FileReader
     protected $file;
 
     protected $totalVideos;
-    protected $videos = array();
+
+    protected $videos = [];
 
     protected $totalEndpoints;
-    protected $endpoints = array();
+
+    protected $endpoints = [];
 
     protected $totalServers;
-    protected $servers = array();
+
+    protected $servers = [];
 
     protected $capacity;
+
+    protected $totalRequests = [];
+
 
     public function __construct($input)
     {
         $this->file = new SplFileObject($input);
     }
 
-    public function getData() {
+
+    public function getData()
+    {
 
         $this->parse();
 
@@ -49,7 +50,8 @@ class FileReader
     }
 
 
-    protected function parse() {
+    protected function parse()
+    {
         //parse header
         $header               = $this->nextLine();
         $this->totalVideos    = $header[0];
@@ -81,7 +83,7 @@ class FileReader
                     $server = $this->servers[$serverData[0]];
                     $server->addEndpointLatency($i, $serverData[1]);
                 } else {
-                    $server = new Server($serverData[0], $i, $serverData[1]);
+                    $server                        = new Server($serverData[0], $i, $this->capacity, $serverData[1]);
                     $this->servers[$serverData[0]] = $server;
                 }
 
@@ -99,7 +101,9 @@ class FileReader
 
     }
 
-    protected function nextLine() {
+
+    protected function nextLine()
+    {
         return explode(' ', $this->file->fgets());
     }
 

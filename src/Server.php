@@ -5,14 +5,17 @@ class Server
 
     protected $id;
 
-    protected $latencies = array();
+    protected $latencies = [];
 
-    protected $videos = array();
+    protected $videos = [];
+
+    protected $free;
 
 
-    public function __construct($id, $endpointId = null, $latency = null)
+    public function __construct($id, $free, $endpointId = null, $latency = null)
     {
-        $this->id = $id;
+        $this->id   = $id;
+        $this->free = $free;
         if ( ! is_null($endpointId) && ! is_null($latency)) {
             $this->latencies[$endpointId] = $latency;
         }
@@ -25,12 +28,28 @@ class Server
     }
 
 
+    public function addVideo(Video $video)
+    {
+        array_push($this->videos, $video);
+        $this->free = $this->free - $video->getSize();
+    }
+
+
     /**
      * @return mixed
      */
     public function getId()
     {
         return $this->id;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getFree()
+    {
+        return $this->free;
     }
 
 
@@ -49,7 +68,7 @@ class Server
     public function getEndpointLatency(Endpoint $endpoint)
     {
         $id = $endpoint->getId();
-        if (array_key_exists($id,$this->latencies)) {
+        if (array_key_exists($id, $this->latencies)) {
             return $this->latencies[$id];
         } else {
             return null;

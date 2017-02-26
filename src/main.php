@@ -1,26 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lephleg
- * Date: 26/02/2017
- * Time: 00:35
- */
 
 include_once 'FileReader.php';
 include_once 'FileWriter.php';
-
-
 
 class HashCode
 {
 
     protected $input;
 
-    protected $videos = array();
+    protected $videos = [];
 
-    protected $servers = array();
+    protected $servers = [];
 
-    protected $endpoints = array();
+    protected $endpoints = [];
 
 
     public function __construct($filename)
@@ -35,8 +27,18 @@ class HashCode
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
         $this->calculate();
-        $writer = new FileWriter("../output/$argv[1]", $this->servers);
+        $writer = new FileWriter("../output/$argv[1].out", $this->servers);
         $writer->write();
+    }
+
+
+    protected function populate($data)
+    {
+
+        $this->videos    = $data['videos'];
+        $this->servers   = $data['servers'];
+        $this->endpoints = $data['endpoints'];
+
     }
 
 
@@ -47,20 +49,12 @@ class HashCode
                 $sum[$i] = 0;
                 foreach ($endpoint->getServers() as $j => $server) {
                     $requests = $video->getEndpointRequests($endpoint);
-                    $latency = $server->getEndpointLatency($endpoint);
-                    $cost = $requests*$latency;
-                    $sum[$i] = $sum[$i] + $cost;
+                    $latency  = $server->getEndpointLatency($endpoint);
+                    $cost     = $requests * $latency;
+                    $sum[$i]  = $sum[$i] + $cost;
                 }
             }
         }
-
-    }
-
-    protected function populate($data) {
-
-        $this->videos = $data['videos'];
-        $this->servers = $data['servers'];
-        $this->endpoints = $data['endpoints'];
 
     }
 

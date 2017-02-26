@@ -2,16 +2,21 @@
 
 class FileWriter
 {
+
     protected $filename;
+
     protected $servers;
+
 
     public function __construct($filename, $servers)
     {
         $this->filename = $filename;
-        $this->servers = $servers;
+        $this->servers  = $servers;
     }
 
-    public function write() {
+
+    public function write()
+    {
 
         $totalServers = count($this->servers);
 
@@ -32,9 +37,10 @@ class FileWriter
         fclose($myfile);
     }
 
-    protected static function print_line($line = '') {
+
+    protected static function print_line($line = '')
+    {
         return $line . "\n";
     }
-
 
 }

@@ -7,7 +7,7 @@ class Endpoint
 
     protected $id;
 
-    protected $servers = array();
+    protected $servers = [];
 
     protected $dataCenterLatency;
 
@@ -35,6 +35,7 @@ class Endpoint
     {
         return $this->id;
     }
+
 
     /**
      * @return array

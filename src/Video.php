@@ -9,7 +9,7 @@ class Video
 
     protected $size;
 
-    protected $requests = array();
+    protected $requests = [];
 
 
     public function __construct($id, $size)
@@ -24,18 +24,26 @@ class Video
         array_push($this->requests, $request);
     }
 
-    public function getEndpointRequests(Endpoint $endpoint) {
+
+    public function getEndpointRequests(Endpoint $endpoint)
+    {
         $id = $endpoint->getId();
 
-        $requests = array_filter(
-            $this->requests,
-            function ($e) use (&$id) {
-                return $e->getId() == $id;
-            }
-        );
+        $requests = array_filter($this->requests, function ($e) use (&$id) {
+            return $e->getId() == $id;
+        });
 
         return ($requests) ? $requests[0]->getTotal() : null;
 
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 
 }
