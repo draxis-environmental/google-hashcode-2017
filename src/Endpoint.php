@@ -70,12 +70,16 @@ class Endpoint
             unset($tmpServersLatency[$exServerId]);
         }
 
+        if (empty($tmpServersLatency)) {
+            return -1; // No cache servers linked with this endpoint
+        }
+
         $serverId = array_keys($tmpServersLatency, min($tmpServersLatency));
 
         if($tmpServersLatency[$serverId[0]] >= $this->dataCenterLatency )
             return -1; // Datacenter is the closest, keep it in datacenter
 
-        if($this->servers[$serverId[0]]->hasSpace($video))
+        if($this->servers[$serverId[0]]->hasSpace($video)) 
             return $serverId[0];
         else
         {
