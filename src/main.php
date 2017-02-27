@@ -28,8 +28,8 @@ class HashCode
         $reader = new FileReader($this->input);
         $this->populate($reader->getData());
         $this->calculate();
-        //$writer = new FileWriter("../output/$argv[1].out", $this->servers);
-        //$writer->printServersWithEndpoints();
+        $writer = new FileWriter("../output/$argv[1].out", $this->servers);
+        $writer->write();
     }
 
 
@@ -51,32 +51,29 @@ class HashCode
 
             foreach($video->getRequests() as $request)
             {
-                $closestServer = $this->servers[$request->endpoint->getClosestFreeServer($video)];
+                $id = $request->endpoint->getClosestFreeServer($video);
+                //if($id) {
+                    $closestServer = $this->servers[$id];
 
-                if(is_object($closestServer))
-                {
-                    if($closestServer->hasSpace($video)) {
-                        $closestServer->addVideo($video);
+                    if(is_object($closestServer))
+                    {
+                        if($closestServer->hasSpace($video)) {
+                            $closestServer->addVideo($video);
+                        }
                     }
-                }
 
+                //}
             }
 
-            /*foreach ($this->servers as $i => $server) {
-                $sum[$i] = 0;
-                foreach ($server->getAllEndpoints() as $endpointId) {
-                    $requests = $video->getEndpointRequests($endpointId);
-                    $latency  = $server->getEndpointLatency($endpointId);
-                    $cost     = $requests * $latency;
-                    $sum[$i]  = $sum[$i] + $cost;
-                }
-            }*/
         }
 
         foreach($this->servers as $s)
         {
-            echo $s->getId().' =>';
-            print_r($s->video_ids);
+            print_r($s->getId() . ' ');
+            foreach ($s->getVideos() as $video) {
+                print_r($video->getId(). ' ');
+            }
+            print_r("\n");
         }
 
     }
