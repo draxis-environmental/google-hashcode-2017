@@ -28,7 +28,7 @@ class FileWriter
             fwrite($myfile, $server->getId());
             fwrite($myfile, ' ');
             foreach ($server->getVideos() as $video) {
-                fwrite($myfile, $video->id);
+                fwrite($myfile, $video->getId());
                 fwrite($myfile, ' ');
             }
             $txt = $this::print_line();
