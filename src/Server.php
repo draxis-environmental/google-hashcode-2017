@@ -32,7 +32,9 @@ class Server
 
     public function addVideo(Video $video)
     {
-        array_push($this->videos, $video);
+        if(!in_array($video, $this->videos, true)) {
+            array_push($this->videos, $video);
+        }
         $this->free = $this->free - $video->getSize();
         $this->video_ids[$video->getId()] = $video->getId();
     }
