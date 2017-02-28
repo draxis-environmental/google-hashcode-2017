@@ -61,29 +61,28 @@ class Endpoint
 
     public function getClosestFreeServer(Video $video, $excludeFullServers = array())
     {
-        if(sizeof($excludeFullServers) >= sizeof($this->serverLatency) )
+        if(sizeof($this->serverLatency) <= 0)
             return -1; // All cache servers are full , keep it in datacenter
 
-        $tmpServersLatency = $this->serverLatency;
 
         foreach($excludeFullServers as $id => $exServerId) {
-            unset($tmpServersLatency[$exServerId]);
+            unset($this->serverLatency[$exServerId]);
         }
 
-        if (empty($tmpServersLatency)) {
+        if (empty($this->serverLatency)) {
             return -1; // No cache servers linked with this endpoint
         }
 
-        $serverId = array_keys($tmpServersLatency, min($tmpServersLatency));
+        $serverId = array_keys($this->serverLatency, min($this->serverLatency));
 
-        if($tmpServersLatency[$serverId[0]] >= $this->dataCenterLatency )
+        if($this->serverLatency[$serverId[0]] >= $this->dataCenterLatency )
             return -1; // Datacenter is the closest, keep it in datacenter
 
         if($this->servers[$serverId[0]]->hasSpace($video)) 
             return $serverId[0];
         else
         {
-            array_push($excludeFullServers,$serverId[0]);
+            $excludeFullServers[$serverId[0]] = $serverId[0];
             $this->getClosestFreeServer($video,$excludeFullServers);
         }
 

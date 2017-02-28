@@ -52,7 +52,7 @@ class HashCode
             foreach($video->getRequests() as $request)
             {
                 $id = $request->endpoint->getClosestFreeServer($video);
-                //if($id) {
+                if($id >= 0) {
                     $closestServer = $this->servers[$id];
 
                     if(is_object($closestServer))
@@ -62,7 +62,7 @@ class HashCode
                         }
                     }
 
-                //}
+                }
             }
 
         }
