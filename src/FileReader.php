@@ -82,9 +82,11 @@ class FileReader
                 if (array_key_exists($serverData[0], $this->servers)) {
                     $server = $this->servers[$serverData[0]];
                     $server->addEndpointLatency($i, $serverData[1]);
+                    $server->addEndpoint($this->endpoints[$i]);
                 } else {
                     $server                        = new Server($serverData[0], $this->capacity, $i, $serverData[1]);
                     $this->servers[$serverData[0]] = $server;
+                    $server->addEndpoint($this->endpoints[$i]);
                 }
 
                 $this->endpoints[$i]->addServer($server);

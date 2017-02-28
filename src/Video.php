@@ -54,6 +54,19 @@ class Video
     }
 
 
+    public function hasRequestsFromEndpoint(Endpoint $endpoint) {
+
+        $found = array();
+        foreach ($this->requests as $request) {
+            if ($request->endpoint->getId() == $endpoint->getId()){
+                array_push($found,$request);
+            }
+        }
+        return $found;
+
+    }
+
+
     /**
      * @return mixed
      */

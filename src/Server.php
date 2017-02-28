@@ -11,6 +11,8 @@ class Server
 
     protected $free;
 
+    protected $endpoints = [];
+
     public $video_ids;
 
 
@@ -27,6 +29,13 @@ class Server
     public function addEndpointLatency($endpointId, $latency)
     {
         $this->latencies[$endpointId] = $latency;
+    }
+
+    public function addEndpoint(Endpoint $endpoint)
+    {
+        if(!in_array($endpoint, $this->endpoints, true)) {
+            array_push($this->endpoints, $endpoint);
+        }
     }
 
 
@@ -90,6 +99,6 @@ class Server
      */
     public function getAllEndpoints()
     {
-        return array_keys($this->latencies);
+        return $this->endpoints;
     }
 }
