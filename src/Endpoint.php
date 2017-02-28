@@ -61,7 +61,7 @@ class Endpoint
 
     public function getClosestFreeServer(Video $video, $excludeFullServers = array())
     {
-        if(sizeof($excludeFullServers) >= $this->serverLatency )
+        if(sizeof($excludeFullServers) >= sizeof($this->serverLatency) )
             return -1; // All cache servers are full , keep it in datacenter
 
         $tmpServersLatency = $this->serverLatency;
