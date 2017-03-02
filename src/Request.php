@@ -3,35 +3,21 @@
 class Request
 {
 
-    protected $id;
+    public $id;
 
-    public $endpoint;
+    public $vid;
+
+    public $eid;
 
     public $total;
 
 
-    public function __construct(Endpoint $endpoint, $total)
+    public function __construct($id, $vid, $eid, $total)
     {
-        $this->endpoint = $endpoint;
-        $this->total    = $total;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getTotal()
-    {
-        return $this->total;
+        $this->id    = $id;
+        $this->vid   = $vid;
+        $this->eid   = $eid;
+        $this->total = $total;
     }
 
 }

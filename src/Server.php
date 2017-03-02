@@ -3,37 +3,26 @@
 class Server
 {
 
-    protected $id;
+    public $id;
 
-    protected $latencies = [];
+    public $size;
 
-    protected $videos = [];
+    public $endpoints = [];
 
-    protected $free;
-
-    protected $endpoints = [];
-
-    public $video_ids;
+    public $videos = [];
 
 
-    public function __construct($id, $free, $endpointId = null, $latency = null)
+    public function __construct($id, $size)
     {
-        $this->id   = $id;
-        $this->free = $free;
-        $this->video_ids = array();
-        if ( ! is_null($endpointId) && ! is_null($latency)) {
-            $this->latencies[$endpointId] = $latency;
-        }
+        $this->id        = $id;
+        $this->size      = $size;
+        $this->endpoints = [];
     }
 
-    public function addEndpointLatency($endpointId, $latency)
-    {
-        $this->latencies[$endpointId] = $latency;
-    }
 
     public function addEndpoint(Endpoint $endpoint)
     {
-        if(!in_array($endpoint, $this->endpoints, true)) {
+        if ( ! in_array($endpoint, $this->endpoints, true)) {
             array_push($this->endpoints, $endpoint);
         }
     }
@@ -41,64 +30,9 @@ class Server
 
     public function addVideo(Video $video)
     {
-        if(!in_array($video, $this->videos, true)) {
+        if ( ! in_array($video, $this->videos, true)) {
             array_push($this->videos, $video);
         }
-        $this->free = $this->free - $video->getSize();
-        $this->video_ids[$video->getId()] = $video->getId();
     }
 
-    public function hasSpace(Video $video)
-    {
-        $status = ( ($this->free >= $video->getSize()) > 0 ) ? true : false;
-        return $status;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getFree()
-    {
-        return $this->free;
-    }
-
-    /**
-     * @return array
-     */
-    public function getVideos()
-    {
-        return $this->videos;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getEndpointLatency(Endpoint $endpoint)
-    {
-        $id = $endpoint->getId();
-        if (array_key_exists($id, $this->latencies)) {
-            return $this->latencies[$id];
-        } else {
-            return null;
-        }
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getAllEndpoints()
-    {
-        return $this->endpoints;
-    }
 }

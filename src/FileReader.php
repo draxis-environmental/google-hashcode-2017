@@ -4,6 +4,7 @@ include_once 'Endpoint.php';
 include_once 'Video.php';
 include_once 'Server.php';
 include_once 'Request.php';
+include_once 'Connection.php';
 
 class FileReader
 {
@@ -69,9 +70,9 @@ class FileReader
         //parse endpoints
         for ($i = 0; $i < $this->totalEndpoints; $i++) {
 
-            $endpointData        = $this->nextLine();
+            $endpointData = $this->nextLine();
             $this->endpoints[$i] = new Endpoint($i, $endpointData[0]);
-            $endpointServers     = $endpointData[1];
+            $endpointServers = $endpointData[1];
 
             //parse endpoint's servers
             for ($j = 0; $j < $endpointServers; $j++) {
@@ -81,16 +82,14 @@ class FileReader
                 //is this a first-appearing server?
                 if (array_key_exists($serverData[0], $this->servers)) {
                     $server = $this->servers[$serverData[0]];
-                    $server->addEndpointLatency($i, $serverData[1]);
                     $server->addEndpoint($this->endpoints[$i]);
                 } else {
-                    $server                        = new Server($serverData[0], $this->capacity, $i, $serverData[1]);
+                    $server = new Server($serverData[0], $this->capacity);
                     $this->servers[$serverData[0]] = $server;
                     $server->addEndpoint($this->endpoints[$i]);
                 }
 
-                $this->endpoints[$i]->addServer($server);
-                $this->endpoints[$i]->addServerLatency($server->getId(),$serverData[1]);
+                $this->endpoints[$i]->addConnection(new Connection($j, $server->id, $serverData[1]));
             }
 
         }
@@ -98,9 +97,12 @@ class FileReader
         //parse requests
         for ($i = 0; $i < $this->totalRequests; $i++) {
             $requestData = $this->nextLine();
-            $req         = new Request($this->endpoints[$requestData[1]], $requestData[2]);
-            $this->videos[$requestData[0]]->addRequest($req);
+            $req = new Request($i, $requestData[0], $requestData[1], $requestData[2]);
+
+            $this->videos[$req->vid]->addRequest($req);
+            $this->endpoints[$req->eid]->addRequest($req);
         }
+
 
     }
 
