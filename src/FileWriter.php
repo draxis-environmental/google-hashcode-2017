@@ -5,30 +5,30 @@ class FileWriter
 
     protected $filename;
 
-    protected $servers;
+    protected $videosOnServers;
 
 
-    public function __construct($filename, $servers)
+    public function __construct($filename, $videosOnServers)
     {
         $this->filename = $filename;
-        $this->servers  = $servers;
+        $this->videosOnServers  = $videosOnServers;
     }
 
 
     public function write()
     {
 
-        $totalServers = count($this->servers);
+        $totalServers = count($this->videosOnServers);
 
         $myfile = fopen($this->filename, "w") or die("Unable to open file!");
         $txt = $this::print_line($totalServers);
         fwrite($myfile, $txt);
 
-        foreach ($this->servers as $server) {
-            fwrite($myfile, $server->getId());
+        foreach ($this->videosOnServers as $sid => $server) {
+            fwrite($myfile, $sid);
             fwrite($myfile, ' ');
-            foreach ($server->getVideos() as $video) {
-                fwrite($myfile, $video->getId());
+            foreach ($this->videosOnServers[$sid] as $vid => $video) {
+                fwrite($myfile, $video);
                 fwrite($myfile, ' ');
             }
             $txt = $this::print_line();
@@ -41,28 +41,6 @@ class FileWriter
     protected static function print_line($line = '')
     {
         return $line . "\n";
-    }
-
-
-    public function printServersWithEndpoints() {
-
-        $totalServers = count($this->servers);
-
-        $myfile = fopen($this->filename, "w") or die("Unable to open file!");
-        $txt = $this::print_line($totalServers);
-        fwrite($myfile, $txt);
-
-        foreach ($this->servers as $server) {
-            fwrite($myfile, $server->getId());
-            fwrite($myfile, ' ');
-            foreach ($server->getAllEndpoints() as $id => $endpointId) {
-                fwrite($myfile, "$endpointId ");
-            }
-            $txt = $this::print_line();
-            fwrite($myfile, $txt);
-        }
-        fclose($myfile);
-
     }
 
 }

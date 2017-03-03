@@ -11,7 +11,6 @@ class Request
 
     public $total;
 
-
     public function __construct($id, $vid, $eid, $total)
     {
         $this->id    = $id;
