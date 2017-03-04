@@ -11,6 +11,10 @@ class FileReader
 
     protected $file;
 
+    protected $debug;
+
+    protected $progress;
+
     protected $totalVideos;
 
     protected $videos = [];
@@ -28,9 +32,11 @@ class FileReader
     protected $totalRequests = [];
 
 
-    public function __construct($input)
+    public function __construct($input, $debug = 0, $progress = 0)
     {
         $this->file = new SplFileObject($input);
+        $this->debug = $debug;
+        $this->progress = $progress;
     }
 
 
@@ -62,14 +68,15 @@ class FileReader
         $this->capacity       = $header[4];
 
         //parse videos
+        print_r("Parsing videos...\n");
         $videos = $this->nextLine();
         foreach ($videos as $index => $video) {
             $this->videos[$index] = new Video($index, $video);
         }
 
         //parse endpoints
+        print_r("Parsing endpoints...\n");
         for ($i = 0; $i < $this->totalEndpoints; $i++) {
-
             $endpointData = $this->nextLine();
             $this->endpoints[$i] = new Endpoint($i, $endpointData[0]);
             $endpointServers = $endpointData[1];
@@ -92,18 +99,22 @@ class FileReader
                 $this->endpoints[$i]->addConnection(new Connection($j, $server->id, $serverData[1]));
             }
 
+            $this->progress and show_progress($i,$this->totalEndpoints, 'endpoints');
         }
 
         //parse requests
+        print_r("Parsing requests...\n");
         for ($i = 0; $i < $this->totalRequests; $i++) {
             $requestData = $this->nextLine();
             $req = new Request($i, $requestData[0], $requestData[1], $requestData[2]);
 
             $this->videos[$req->vid]->addRequest($req);
             $this->endpoints[$req->eid]->addRequest($req);
+
+            $this->progress and show_progress($i,$this->totalRequests, 'requests');
         }
 
-
+        print_r("\n");
     }
 
 
